@@ -1,0 +1,40 @@
+---
+spec-version: v1.0
+name: alteiademo/pc2dtm
+display-name: PointCloud (.las) to Digital Terrain Model (.tif) (convertion)
+version: 1.0.0
+description: Generates a DTM (.tif) from a PointCloud (.las)
+docker-image: registry-1.docker.io/michaeldelagarde/pc2dsm:latest
+instance-type: small
+volume-size: 20
+groups: [UTILS]
+
+inputs:
+  - name: input_pc
+    display-name: Choose PointCloud
+    description: PointCloud file (.las)
+    kind: dataset
+    schema:
+      type: pcl
+    required: true
+
+parameters:
+  - name: grid_size
+    display-name: 'Grid Size (m) - Default: 0.2m'
+    description: The resolution of the output raster in m
+    schema:
+      type: string
+    required: False
+
+
+deliverables:
+  - name: output_dsm
+    display-name: output_dtm
+    description: Digital Terrain Model (.tif)
+    kind: dataset
+    schema:
+      type: raster
+    required: true
+
+
+
