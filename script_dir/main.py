@@ -4,11 +4,10 @@ import logging
 import os
 from pathlib import Path
 import sys
-from pc2dsm import pc2dsm
-
 import time
 
-from upload_dataset import upload_dataset
+from pc2dtm import pc2dtm
+
 
 
 LOG_FORMAT = '[%(levelname)s] %(message)s'
@@ -59,35 +58,33 @@ def main():
 	logging.debug(grid_size)
 	
 
-	pc2dsm(file_path, grid_size, horizontal_srs_wkt, WORKING_DIR)
+	pc2dtm(file_path, grid_size, horizontal_srs_wkt, WORKING_DIR)
 
 
 	logging.debug('Generating outputs.json file...')
 
-	outpath = WORKING_DIR / 'min.tif'
+	outpath = WORKING_DIR / 'output.tif'
 	output = {
 		"outputs": {
-			"output_dsm": {  # Must match the name of deliverable in rust-detector.yaml
+			"output": {  # Must match the name of deliverable in rust-detector.yaml
 				"type": "raster",
 				"format": "tif",
-				# "categories": ["PlantHeight"],
-				"name": "dtm",
+				"name": "output_pc2dtm",
 				"components": [
 					{
-						"name": "min",
-						# "filename": "output.tif",
+						"name": "raster",
 						"path": str(outpath)
 					}
 				]
 			}
 		},
-		"version": "v1.0"
+		"version": "0.1"
 	}
 	with open(WORKING_DIR / 'outputs.json', 'w+') as f:
 		json.dump(output, f)
 
-	script_dir = str(SCRIPT_DIR)
-	upload_dataset(str(outpath), project_id, mission_id, script_dir)
+	# script_dir = str(SCRIPT_DIR)
+	# upload_dataset(str(outpath), project_id, mission_id, script_dir)
 
 	logging.debug('End.')
 

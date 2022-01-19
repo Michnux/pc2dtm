@@ -15,7 +15,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format=LOG_FORMAT)
 
 
 
-def pc2dsm(file_path, grid_size, horizontal_srs_wkt, WORKING_DIR):
+def pc2dtm(file_path, grid_size, horizontal_srs_wkt, WORKING_DIR):
 
 	# get the crs from the las file
 	# the same crs will be used for the output raster
@@ -37,13 +37,29 @@ def pc2dsm(file_path, grid_size, horizontal_srs_wkt, WORKING_DIR):
 	with open(WORKING_DIR / 'pipeline_min.json', 'w') as outfile:
 		json.dump(pipeline_min, outfile)
 
-	logging.debug('Generating max rasters...')
-	#generate rasters: max (description of pipelines in .json files)
+	logging.debug('Generating min rasters...')
+	#generate rasters: min (description of pipelines in .json files)
 	subprocess.run('pdal pipeline '+str(WORKING_DIR/'pipeline_min.json'), shell=True)
+
+
+	logging.debug('adding a crs to the raster...')
+
+	dataset_min = rio.open(WORKING_DIR/'min.tif')
+
+	new_dataset = rio.open(WORKING_DIR/'output.tif', 'w',
+									driver = dataset_min.driver,
+									nodata = dataset_min.nodata,
+									height=dataset_min.height, width=dataset_min.width,
+									count=dataset_min.count, dtype=rio.float64,
+									crs=crs_las, transform=dataset_min.transform)
+
+	band_min = dataset_min.read(1)
+
+	new_dataset.write(band_min, 1)
 
 	logging.debug('All done')
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-	pc2ph('input.las', 0.2)
+# 	pc2dtm('input.las', 0.2)

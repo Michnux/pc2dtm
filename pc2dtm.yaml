@@ -1,10 +1,10 @@
----
+d---
 spec-version: v1.0
 name: alteiademo/pc2dtm
 display-name: PointCloud (.las) to Digital Terrain Model (.tif) (convertion)
 version: 1.0.0
 description: Generates a DTM (.tif) from a PointCloud (.las)
-docker-image: registry-1.docker.io/michaeldelagarde/pc2dsm:latest
+docker-image: registry-1.docker.io/michaeldelagarde/pc2dtm:latest
 instance-type: small
 volume-size: 20
 groups: [UTILS]
